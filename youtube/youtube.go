@@ -28,6 +28,17 @@ func sinceHours(left string) (float64, error) {
    return time.Since(t).Hours(), nil
 }
 
+type Player struct{
+   Description struct{
+      SimpleText string
+   }
+   PublishDate string
+   Title struct{
+      SimpleText string
+   }
+   ViewCount string
+}
+
 func Info(id string) (Player, error) {
    get, err := http.Get("https://www.youtube.com/get_video_info?video_id=" + id)
    if err != nil {
@@ -62,8 +73,14 @@ func (p Player) Views() (string, error) {
    }
    view /= hour / 24 / 365
    format := numberFormat(view)
-   if view > 8_000_000 {
+   if view > 10_000_000 {
       return x.ColorRed(format), nil
    }
    return x.ColorGreen(format), nil
+}
+
+type response struct {
+   Microformat struct {
+      PlayerMicroformatRenderer Player
+   }
 }
