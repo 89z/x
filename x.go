@@ -2,11 +2,13 @@
 package x
 
 import (
+   "bufio"
    "bytes"
    "encoding/json"
    "fmt"
    "net/http"
    "os"
+   "os/exec"
    "path/filepath"
    "regexp"
 )
@@ -71,4 +73,13 @@ func JsonMarshal(v interface{}) ([]byte, error) {
       return nil, err
    }
    return dst.Bytes()[:dst.Len() - 1], nil
+}
+
+func Popen(name string, arg ...string) (*bufio.Scanner, error) {
+   cmd := exec.Command(name, arg...)
+   pipe, err := cmd.StdoutPipe()
+   if err != nil {
+      return nil, fmt.Errorf("StdoutPipe %v", err)
+   }
+   return bufio.NewScanner(pipe), cmd.Start()
 }
