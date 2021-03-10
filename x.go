@@ -13,20 +13,6 @@ import (
    "regexp"
 )
 
-func ColorCyan(s string) string {
-   return "\x1b[96m" + s + "\x1b[m"
-}
-
-// Foreground bright green
-func ColorGreen(s string) string {
-   return "\x1b[92m" + s + "\x1b[m"
-}
-
-// Foreground bright red
-func ColorRed(s string) string {
-   return "\x1b[91m" + s + "\x1b[m"
-}
-
 func Copy(source, dest string) (int64, error) {
    info, err := os.Stat(dest)
    if err == nil {
@@ -47,7 +33,7 @@ func Copy(source, dest string) (int64, error) {
       return 0, err
    }
    defer create.Close()
-   fmt.Println(ColorCyan("Get"), source)
+   LogInfo("Get", source)
    get, err := http.Get(source)
    if err != nil {
       return 0, err
@@ -73,6 +59,21 @@ func JsonMarshal(v interface{}) ([]byte, error) {
       return nil, err
    }
    return dst.Bytes()[:dst.Len() - 1], nil
+}
+
+func LogFail(s string, a ...interface{}) {
+   fmt.Print("\x1b[30;101m ", s, " \x1b[m ")
+   fmt.Println(a...)
+}
+
+func LogInfo(s string, a ...interface{}) {
+   fmt.Print("\x1b[30;106m ", s, " \x1b[m ")
+   fmt.Println(a...)
+}
+
+func LogPass(s string, a ...interface{}) {
+   fmt.Print("\x1b[30;102m ", s, " \x1b[m ")
+   fmt.Println(a...)
 }
 
 func Popen(name string, arg ...string) (*bufio.Scanner, error) {
